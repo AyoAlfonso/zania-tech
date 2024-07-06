@@ -5,6 +5,12 @@ Zania Project Overview
 Frontend: Contains the user interface components and assets.
 Backend: Contains the fastAPI APIs
 
+To Run with Docker:
+
+```sh
+docker-compose up --build
+```
+
 ## Setup Steps
 
 1. Clone the Repository

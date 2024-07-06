@@ -43,13 +43,14 @@ function App() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [overlayImage, setOverlayImage] = useState(null);
+  // we can also use a proxy to access the backend instead of an environment variable depending on preference
   const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
   usePassiveEventListeners();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${apiUrl}/v1/documents`); // we are using a proxy to access the backend
+        const response = await fetch(`${apiUrl}/v1/documents`);
         const data = await response.json();
 
         setItems(data);
