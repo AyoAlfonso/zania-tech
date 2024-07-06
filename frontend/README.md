@@ -29,18 +29,9 @@ This is a React application that displays a sortable list of items. Clicking on 
      ```sh
      npm install
      ```
-     or
-   - yarn:
-     ```sh
-     yarn install
-     ```
 3. Start the application:
    ```sh
    npm start
-   ```
-   or
-   ```sh
-   yarn start
    ```
 4. Open the application in your browser at http://localhost:3000
 5. Enjoy!

@@ -34,23 +34,23 @@ DocumentIn_Pydantic = pydantic_model_creator(Document, name="DocumentIn", exclud
 async def read_root():
     return {"status": 200, "message": "welcome to zania API !"}
 
-@app.post("/documents", response_model=Document_Pydantic)
+@app.post("/v1/documents", response_model=Document_Pydantic)
 async def create_document(document: DocumentIn_Pydantic):
     obj = await Document.create(**document.dict())
     return await Document_Pydantic.from_tortoise_orm(obj)
 
-@app.get("/documents/{document_id}", response_model=Document_Pydantic)
+@app.get("/v1/documents/{document_id}", response_model=Document_Pydantic)
 async def get_document(document_id: int):
     obj = await Document.get(id=document_id)
     if not obj:
         raise HTTPException(status_code=404, detail="Document not found")
     return await Document_Pydantic.from_tortoise_orm(obj)
 
-@app.get("/documents", response_model=list[Document_Pydantic])
+@app.get("/v1/documents", response_model=list[Document_Pydantic])
 async def list_documents():
     return await Document_Pydantic.from_queryset(Document.all())
 
-@app.post("/documents/bulk")
+@app.post("/v1/documents/bulk")
 async def update_documents(documents: list[Document_Pydantic]):
     cats_to_delete = [doc.title for doc in documents]
     async with in_transaction():

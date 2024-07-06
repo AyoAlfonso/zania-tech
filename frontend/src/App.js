@@ -5,6 +5,7 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 import { arrayMoveImmutable } from "array-move";
 
+// cat images from https://cataas.com
 const thumbnails = {
   "bank-draft": "https://cataas.com/cat/NWO1DbHLf2RgndBg?position=center",
   "bill-of-lading": "https://cataas.com/cat/P8EJ6pT54XZPkEyN?position=center",
@@ -23,9 +24,10 @@ const SortableItem = SortableElement(({ value, onClick }) => {
 });
 
 const SortableList = SortableContainer(({ items, onClick }) => {
+  if (!items.length) return <> No items </>;
   return (
     <div className="card-container">
-      {items.map((value, index) => (
+      {items?.map((value, index) => (
         <SortableItem
           key={`item-${value.position}`}
           index={index}
@@ -41,14 +43,15 @@ function App() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [overlayImage, setOverlayImage] = useState(null);
+  const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
   usePassiveEventListeners();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/documents");
+        const response = await fetch(`${apiUrl}/v1/documents`); // we are using a proxy to access the backend
         const data = await response.json();
-        console.log("Data fetched:", data);
+
         setItems(data);
         setLoading(false);
       } catch (error) {
@@ -58,8 +61,6 @@ function App() {
     };
 
     fetchData();
-
-    // const intervalId = setInterval(fetchData, 5000);
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -71,13 +72,12 @@ function App() {
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      // clearInterval(intervalId);
     };
   }, []);
 
   const saveData = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/documents/bulk", {
+      const response = await fetch(`${apiUrl}/v1/documents/bulk`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -92,8 +92,7 @@ function App() {
     }
   };
   useEffect(() => {
-    const intervalId = setInterval(saveData, 5000);
-
+    const intervalId = setInterval(saveData, 5000); // save data every 5 seconds
     return () => clearInterval(intervalId);
   }, [items]);
 
@@ -105,7 +104,6 @@ function App() {
       })
     );
     setItems(newItems);
-    // saveData(newItems);
   };
 
   const handleCardClick = (type) => {

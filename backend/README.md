@@ -5,7 +5,7 @@ Delete the existing db.sqlite3 file (if necessary):
 
 rm db.sqlite3
 
-Load the data into the database:
+Load the seed data into the database:
 
 python3 setup.py
 
