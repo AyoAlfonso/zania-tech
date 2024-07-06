@@ -29,6 +29,7 @@ This is a React application that displays a sortable list of items. Clicking on 
      ```sh
      npm install
      ```
+     or
    - yarn:
      ```sh
      yarn install
