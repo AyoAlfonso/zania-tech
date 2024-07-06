@@ -5,14 +5,6 @@ import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 import { arrayMoveImmutable } from "array-move";
 
-const data = [
-  { type: "bank-draft", title: "Bank Draft", position: 0 },
-  { type: "bill-of-lading", title: "Bill of Lading", position: 1 },
-  { type: "invoice", title: "Invoice", position: 2 },
-  { type: "bank-draft-2", title: "Bank Draft 2", position: 3 },
-  { type: "bill-of-lading-2", title: "Bill of Lading 2", position: 4 },
-];
-
 const thumbnails = {
   "bank-draft": "https://cataas.com/cat/NWO1DbHLf2RgndBg?position=center",
   "bill-of-lading": "https://cataas.com/cat/P8EJ6pT54XZPkEyN?position=center",
@@ -52,11 +44,22 @@ function App() {
   usePassiveEventListeners();
 
   useEffect(() => {
-    //replace with async call
-    setTimeout(() => {
-      setItems(data);
-      setLoading(false);
-    }, 0.01);
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/documents");
+        const data = await response.json();
+        console.log("Data fetched:", data);
+        setItems(data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    // const intervalId = setInterval(fetchData, 5000);
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -68,11 +71,41 @@ function App() {
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      // clearInterval(intervalId);
     };
   }, []);
 
+  const saveData = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/documents/bulk", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(items),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save data");
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+    }
+  };
+  useEffect(() => {
+    const intervalId = setInterval(saveData, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [items]);
+
   const onSortEnd = ({ oldIndex, newIndex }) => {
-    setItems(arrayMoveImmutable(items, oldIndex, newIndex));
+    const newItems = arrayMoveImmutable(items, oldIndex, newIndex).map(
+      (item, index) => ({
+        ...item,
+        position: index,
+      })
+    );
+    setItems(newItems);
+    // saveData(newItems);
   };
 
   const handleCardClick = (type) => {

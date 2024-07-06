@@ -6,5 +6,5 @@ class Document(models.Model):
     title = fields.CharField(max_length=255)
     position = fields.IntField(unique=True) #Document
 
-    def __str__(self):
+def __str__(self):
         return self.title
