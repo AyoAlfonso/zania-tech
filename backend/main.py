@@ -10,7 +10,7 @@ DocumentIn_Pydantic = pydantic_model_creator(Document, name="DocumentIn", exclud
 
 @app.get("/")
 async def read_root():
-    return {"status": 200, "message": "welcome !"}
+    return {"status": 200, "message": "welcome to zania API !"}
 
 @app.post("/documents", response_model=Document_Pydantic)
 async def create_document(document: DocumentIn_Pydantic):
