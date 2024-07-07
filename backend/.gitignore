@@ -30,6 +30,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+db.sqlite3-wal
+db.sqlite3-shm
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
