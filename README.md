@@ -30,7 +30,8 @@ Things to try/test on the frontend:
 - Refresh the page to see the changes reflected in the frontend and the
 - Check the backend APIs for CRUD operations on documents and to see how the cat positions are updated:
 
-## With Dokcer Setup Steps
+## Setup Steps Without Docker
+
 
 1. Clone the Repository
    Clone the project repository from the Git repository.
