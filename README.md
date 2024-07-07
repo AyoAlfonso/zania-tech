@@ -5,7 +5,7 @@ Zania Project Overview
 Frontend: Contains the user interface components and assets.
 Backend: Contains the fastAPI APIs
 
-To Run with Docker:
+Run with Docker at the root of the project:
 
 ```sh
 docker-compose up --build
@@ -31,7 +31,6 @@ Things to try/test on the frontend:
 - Check the backend APIs for CRUD operations on documents and to see how the cat positions are updated:
 
 ## Setup Steps Without Docker
-
 
 1. Clone the Repository
    Clone the project repository from the Git repository.
@@ -121,6 +120,7 @@ DELETE `/v1/documents/{document_id}`: Deletes a document by its unique ID, an ex
 PUT `/v1/documents/{document_id}`: Updates a document by its unique ID. An example will be `PUT /v1/documents/31 with the payload {"title": "newtitle"}`
 
 #### Transaction Management:
+
 In-Transaction Updates: The bulk update endpoint utilizes transactions to ensure that all updates are applied atomically. If any part of the update fails, the entire transaction is rolled back, maintaining data consistency and integrity.
 
 HTTP Exceptions: Proper HTTP exceptions are raised for error conditions, such as 404 Not Found for non-existent documents. This ensures that clients receive meaningful error messages and can handle them appropriately.
