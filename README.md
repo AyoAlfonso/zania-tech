@@ -35,49 +35,53 @@ Things to try/test on the frontend:
 1. Clone the Repository
    Clone the project repository from the Git repository.
 
-2. Frontend Setup
+2. Frontend Setup: 
    Navigate to the frontend directory.
 
-Install dependencies:
+   ```sh
+   cd frontend
+   ```
 
-```js
-npm install
-```
+   Install dependencies:
 
-Start the frontend server:
+   ```js
+   npm install
+   ```
 
-```js
-npm start
-```
+   Start the frontend server:
 
-Access the frontend application at http://localhost:3000.
+   ```js
+   npm start
+   ```
 
-3. Backend Setup
-   Navigate to the backend directory.
+   Access the frontend application at http://localhost:3000.
 
-Install dependencies:
+   3. Backend Setup
+      Navigate to the backend directory.
 
-```py
-pip3 install -r requirements.txt
-```
+   Install dependencies:
 
-Delete the existing db.sqlite3 file (if necessary):
+   ```py
+   pip3 install -r requirements.txt
+   ```
 
-```
-rm db.sqlite3
-```
+   Delete the existing db.sqlite3 file (if necessary):
 
-Load the seed data into the database:
+   ```
+   rm db.sqlite3
+   ```
 
-```py
-python3 setup.py
-```
+   Load the seed data into the database:
 
-Start the backend server:
+   ```py
+   python3 setup.py
+   ```
 
-```py
-python3 -m uvicorn main:app --reload
-```
+   Start the backend server:
+
+   ```py
+   python3 -m uvicorn main:app --reload
+   ```
 
 Vist the frontend at http://localhost:3000
 

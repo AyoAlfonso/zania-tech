@@ -12,6 +12,7 @@ python3 setup.py
 Run app:
 
 python3 -m uvicorn main:app --reload
+
 This will run the app at the base URL (http://127.0.0.1:8000/)
 
 Vist the API docs:
