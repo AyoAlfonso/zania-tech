@@ -43,7 +43,7 @@ function App() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [overlayImage, setOverlayImage] = useState(null);
-  // we can also use a proxy to access the backend instead of an environment variable depending on preference
+  //We can also use a proxy to access the backend instead of an environment variable depending on preference
   const apiUrl = process.env.REACT_APP_API_URL || "http://127.0.0.1:8000";
   usePassiveEventListeners();
 
