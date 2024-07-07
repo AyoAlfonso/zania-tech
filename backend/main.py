@@ -31,6 +31,7 @@ DocumentIn_Pydantic = pydantic_model_creator(Document, name="DocumentIn", exclud
 
 app.include_router(router, prefix="/api/v1")
 
+# Dependency injection for the database session
 init_database(app)
 
 if __name__ == "__main__":
