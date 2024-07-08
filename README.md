@@ -35,7 +35,7 @@ Things to try/test on the frontend:
 1. Clone the Repository
    Clone the project repository from the Git repository.
 
-2. Frontend Setup: 
+2. Frontend Setup:
    Navigate to the frontend directory.
 
    ```sh
@@ -90,6 +90,10 @@ This will also run the API at the base URL (http://127.0.0.1:8000/)
 ## Architectural Design Decisions:
 
 Frontend: The frontend is built using React and React Sortable.
+
+useCallback for onSortEnd and handleCardClick: These functions are now memoized, preventing them from being recreated on every render.
+
+useMemo for cat items: Memoized cat data to ensure that the SortableList component only re-renders when cats are added or removed.
 
 I made the sure cards were dragaable only horizontally and vertically.
 The useEffect hook also has a clean up function that runs when the component unmounts

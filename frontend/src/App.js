@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { usePassiveEventListeners } from "./usePassiveEventListeners";
 import "./App.css";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
@@ -39,6 +39,23 @@ const SortableList = SortableContainer(({ items, onClick }) => {
   );
 });
 
+const saveDocuments = async (apiUrl, items) => {
+  try {
+    const response = await fetch(`${apiUrl}/documents/bulk`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(items),
+    });
+    if (!response.ok) {
+      throw new Error("Failed to save data");
+    }
+  } catch (error) {
+    console.error("Error saving data:", error);
+  }
+};
+
 function App() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,62 +80,45 @@ function App() {
     };
 
     fetchData();
+  }, [apiUrl]);
 
+  useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === "Escape") {
-        setOverlayImage(null);
-      }
+      if (e.key === "Escape") setOverlayImage(null);
     };
 
     window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const saveData = async () => {
-    try {
-      const response = await fetch(`${apiUrl}/documents/bulk`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(items),
-      });
-      if (!response.ok) {
-        throw new Error("Failed to save data");
-      }
-    } catch (error) {
-      console.error("Error saving data:", error);
-    }
-  };
   useEffect(() => {
-    const intervalId = setInterval(saveData, 5000); // save data every 5 seconds
+    const intervalId = setInterval(() => saveDocuments(apiUrl, items), 5000);
+    // save data every 5 seconds
     return () => clearInterval(intervalId);
   }, [items]);
 
-  const onSortEnd = ({ oldIndex, newIndex }) => {
-    const newItems = arrayMoveImmutable(items, oldIndex, newIndex).map(
-      (item, index) => ({
+  const onSortEnd = useCallback(({ oldIndex, newIndex }) => {
+    setItems((prevItems) =>
+      arrayMoveImmutable(prevItems, oldIndex, newIndex).map((item, index) => ({
         ...item,
         position: index,
-      })
+      }))
     );
-    setItems(newItems);
-  };
+  }, []);
+  
+  const handleCardClick = useCallback(
+    (type) => setOverlayImage(thumbnails[type]),
+    []
+  );
 
-  const handleCardClick = (type) => {
-    setOverlayImage(thumbnails[type]);
-  };
-  if (loading) {
-    return <div>No items</div>;
-  }
+  const memoizedItems = useMemo(() => items, [items]);
+
+  if (loading) return <div>No items</div>;
 
   return (
     <div>
       <SortableList
-        items={items}
+        items={memoizedItems}
         onSortEnd={onSortEnd}
         distance={1}
         axis="xy"

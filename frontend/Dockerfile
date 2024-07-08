@@ -9,4 +9,9 @@ RUN npm install --force
 
 COPY . /app
 
-CMD ["npm", "start"]
+RUN npm run build
+
+# Use a lightweight web server to serve the build
+RUN npm install -g serve
+
+CMD ["serve", "-s", "build"]
