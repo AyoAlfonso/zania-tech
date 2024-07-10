@@ -122,11 +122,11 @@ function App() {
     return () => clearInterval(saveInterval);
   }, [items]);
 
-  // Update time since last save every second
+  // Update time since last saved every 500ms (every second (1000ms) is too slow)
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeSinceLastSave(Math.floor((Date.now() - lastSaveTime) / 1000));
-    }, 1000);
+    }, 500);
 
     return () => clearInterval(timer);
   }, [lastSaveTime]);
