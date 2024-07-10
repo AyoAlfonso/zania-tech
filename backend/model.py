@@ -1,5 +1,8 @@
 from tortoise import fields, models
 
+
+# int, var , varchar, text, datetime, timestamp, decimal, float, boolean, primary_key, foreign_key, unique, index, check, enum, binary, date, time, json, null, raw
+
 class Document(models.Model):
     id = fields.IntField(pk=True)
     type = fields.CharField(max_length=255)

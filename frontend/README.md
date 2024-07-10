@@ -27,7 +27,7 @@ This is a React application that displays a sortable list of items. Clicking on 
 2. Install dependencies:
    - npm:
      ```sh
-     npm install
+     npm install --force
      ```
 3. Start the application:
    ```sh

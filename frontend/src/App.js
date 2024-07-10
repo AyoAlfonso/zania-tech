@@ -1,9 +1,17 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import { usePassiveEventListeners } from "./usePassiveEventListeners";
 import "./App.css";
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
+import _ from "lodash"; // Import lodash
 
 import { arrayMoveImmutable } from "array-move";
+import { Oval } from "react-loader-spinner";
 
 // cat images from https://cataas.com
 const thumbnails = {
@@ -59,12 +67,18 @@ const saveDocuments = async (apiUrl, items) => {
 function App() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [overlayImage, setOverlayImage] = useState(null);
+  const [timeSinceLastSave, setTimeSinceLastSave] = useState(0);
+  const [lastSaveTime, setLastSaveTime] = useState(Date.now());
+  const lastItemsRef = useRef(_.cloneDeep(items)); // Ref to store last items state
+
   //We can also use a proxy to access the backend instead of an environment variable depending on preference
   const apiUrl =
     process.env.REACT_APP_API_URL || "http://127.0.0.1:8000/api/v1";
   usePassiveEventListeners();
 
+  // Fetch data from the backend on app mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -82,6 +96,7 @@ function App() {
     fetchData();
   }, [apiUrl]);
 
+  // Handle key down event to close overlay
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") setOverlayImage(null);
@@ -91,12 +106,32 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  // Save items state every 5 seconds
   useEffect(() => {
-    const intervalId = setInterval(() => saveDocuments(apiUrl, items), 5000);
-    // save data every 5 seconds
-    return () => clearInterval(intervalId);
+    const saveInterval = setInterval(() => {
+      if (!_.isEqual(items, lastItemsRef.current)) {
+        setSaving(true);
+        saveDocuments(apiUrl, items).then(() => {
+          setLastSaveTime(Date.now());
+          console.log("Saved successfully");
+          setSaving(false);
+          lastItemsRef.current = _.cloneDeep(items);
+        });
+      }
+    }, 5000);
+    return () => clearInterval(saveInterval);
   }, [items]);
 
+  // Update time since last save every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeSinceLastSave(Math.floor((Date.now() - lastSaveTime) / 1000));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [lastSaveTime]);
+
+  // Update items state when the sortable list changes
   const onSortEnd = useCallback(({ oldIndex, newIndex }) => {
     setItems((prevItems) =>
       arrayMoveImmutable(prevItems, oldIndex, newIndex).map((item, index) => ({
@@ -105,18 +140,28 @@ function App() {
       }))
     );
   }, []);
-  
+
+  // Handle click on a card to open the overlay
   const handleCardClick = useCallback(
     (type) => setOverlayImage(thumbnails[type]),
     []
   );
 
+  // Memoize items state to prevent unnecessary re-renders
   const memoizedItems = useMemo(() => items, [items]);
 
-  if (loading) return <div>No items</div>;
+  // Display a loading spinner while data is being fetched
+  if (loading)
+    return <Oval visible={true} ariaLabel="loading" width={50} height={50} />;
 
   return (
     <div>
+      <span>
+        {saving && (
+          <Oval visible={true} ariaLabel="loading" width={50} height={50} />
+        )}
+        <div>Last saved: {timeSinceLastSave} seconds ago</div>
+      </span>
       <SortableList
         items={memoizedItems}
         onSortEnd={onSortEnd}
