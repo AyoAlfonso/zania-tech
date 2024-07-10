@@ -113,7 +113,6 @@ function App() {
         setSaving(true);
         saveDocuments(apiUrl, items).then(() => {
           setLastSaveTime(Date.now());
-          console.log("Saved successfully");
           setSaving(false);
           lastItemsRef.current = _.cloneDeep(items);
         });
